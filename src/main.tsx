@@ -3,7 +3,7 @@ import App from './App.tsx'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
-  <div className='container'>
+  // <div className='container'>
     <App />
-  </div>,
+  // </div>,
 )
