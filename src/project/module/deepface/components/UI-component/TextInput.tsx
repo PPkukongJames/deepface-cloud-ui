@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Stack, TextField, Button, Select, MenuItem, Grid2} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -70,6 +70,7 @@ export function TextInputField() {
 const [fileTemp, setTempsFileImage] = useState<FileUploadType | null>(null)
 const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
 const [response, setResponse] = useState<ResPonseSearch | null>(null)
+const [imageBase64, setImageBase64] = useState<string | null>(null);
 
   const {
     control,
@@ -88,6 +89,42 @@ const [response, setResponse] = useState<ResPonseSearch | null>(null)
       detailMsg: "",
     },
   });
+
+
+  useEffect(() => {
+    const fetchImage = async () => {
+
+    // console.log('imageTempUpload', imageTempUpload.tempFile)
+    const payload = {
+        tempFile: fileTemp!.tempFile,
+        fileType: fileTemp!.fileType, 
+        }
+    // console.log('imageTempUpload', imageTempUpload.tempFile)
+    // console.log('payload', payload.tempFile)
+    try {
+    // console.log('payload', payload)
+        const response = await fetch(`${baseURL}/search`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload), // Attach the payload here
+            });
+    const data: ResPonseSearch = await response.json();
+    if (data) {
+        // console.log("DAta--------------", data)
+        setImageBase64(data.deepface.img); // Assuming API returns the base64 string in `data.image`
+        
+    }
+    } catch (error) {
+    console.error("Error fetching the image:", error);
+    } 
+    
+  };
+    
+    
+    fetchImage();
+  }, [fileTemp]);
 
   const handleTriggerData = () => {
 
@@ -283,6 +320,15 @@ const [response, setResponse] = useState<ResPonseSearch | null>(null)
         </Grid2>
         </Grid2>
 
+        
+          <Box>
+      {imageBase64 ? (
+        <img
+          src={`data:image/png;base64,${imageBase64}`}
+          alt="API Loaded"
+          style={{ width: "20vh", height: "20vh", objectFit: "contain" }}
+        />
+      ) : (
         <Box
             sx={{
               display: 'flex',
@@ -294,6 +340,8 @@ const [response, setResponse] = useState<ResPonseSearch | null>(null)
           >
             <FileUploadDropzone setTempsFileImage={setTempsFileImage} />
           </Box>
+      )}
+    </Box>
         
         <Box display='flex' flexDirection='column' justifyContent='flex-start' alignItems='end'>
         <Button type="submit" variant="contained" sx={{ position: "absolute" , top: '870px'}}>

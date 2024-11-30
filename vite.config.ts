@@ -4,4 +4,12 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: '/',
+  build: {
+    outDir: 'dist', // Output directory
+    assetsDir: 'assets', // Directory for static assets
+    rollupOptions: {
+      input: './index.html', // Entry file
+    },
+  },
 })

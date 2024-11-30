@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Box, Typography, Paper } from '@mui/material';
 import { baseURL } from '../../../../../APIs/connetURL';
 import { FileUploadType } from './TextInput';
+import { useSnackbar } from 'notistack';
 
 
 
@@ -16,6 +17,8 @@ interface UploadImage {
 }
 
 const FileUploadDropzone = ({setTempsFileImage }: UploadImage) => {
+
+    const {enqueueSnackbar} = useSnackbar()
     
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -37,6 +40,10 @@ const FileUploadDropzone = ({setTempsFileImage }: UploadImage) => {
             },
           });
 
+          if (response.status == 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+          if (response.data.status == 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+          if (response.status === 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+
           console.log('res', response)
 
            // Adjust based on your API response
@@ -45,6 +52,12 @@ const FileUploadDropzone = ({setTempsFileImage }: UploadImage) => {
           console.log('File uploaded successfully:', response.data);
         } catch (error) {
           console.error('File upload failed:', error);
+          if (error) enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+
+            if (axios.isAxiosError(error)) {
+                enqueueSnackbar('เกิดความผิดพลาดในระบบ')
+                console.error("Axios error response:", error.response?.data);}
+            
         }
       }
     },

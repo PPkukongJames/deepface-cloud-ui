@@ -90,14 +90,11 @@ export default function SearchPage() {
                 ...dataPatch,
                 tempFile: imageTempUpload.tempFile,
                 fileType: imageTempUpload.fileType,
-                detail: dataPatch?.detailMsg
+                detail: dataPatch?.detailMsg2
                 }
-
-                console.log("dataPatch" , dataPatch)
-                console.log("dataPatch" , payload)
                 delete payload.detailMsg
-                console.log("dataPatch" , dataPatch)
-                console.log("dataPatch" , payload)
+                delete payload.detailMsg2
+                
                 const response = await fetch(`${baseURL}/history`, {
                     method: "POST",
                     headers: {
@@ -125,17 +122,17 @@ export default function SearchPage() {
 
         if(!confirm) return
 
-        console.log('imageTempUpload', imageTempUpload.tempFile)
+        // console.log('imageTempUpload', imageTempUpload.tempFile)
         const payload = {
             tempFile: imageTempUpload.tempFile,
             fileType: imageTempUpload.fileType, 
             }
-        console.log('imageTempUpload', imageTempUpload.tempFile)
-        console.log('payload', payload.tempFile)
+        // console.log('imageTempUpload', imageTempUpload.tempFile)
+        // console.log('payload', payload.tempFile)
         try {
             
 
-        console.log('payload', payload)
+        // console.log('payload', payload)
             const response = await fetch(`${baseURL}/search`, {
                 method: "POST",
                 headers: {
@@ -145,7 +142,7 @@ export default function SearchPage() {
                 });
         const data: ResPonseSearch = await response.json();
         if (data) {
-            console.log("DAta--------------", data)
+            // console.log("DAta--------------", data)
             setImageBase64(data.deepface.img); // Assuming API returns the base64 string in `data.image`
             setData(data)
         }
@@ -213,7 +210,7 @@ export default function SearchPage() {
         <img
           src={`data:image/png;base64,${imageBase64}`}
           alt="API Loaded"
-          style={{ width: "80vh", height: "60vh", objectFit: "contain" }}
+          style={{ width: "80vh", height: "50vh", objectFit: "contain" }}
         />
       ) : (
         <FileUploadDropzoneSearch setTempsFileImage={setTempsFileImage} />
