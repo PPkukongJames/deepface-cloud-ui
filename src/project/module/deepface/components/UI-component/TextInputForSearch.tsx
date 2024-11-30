@@ -35,7 +35,7 @@ export interface ResPonseSearch {
 };
 // Define the validation schema using Yup
 const schema = yup.object().shape({
-  firstName: yup.string().required("ชื่อผู้ใช้ is required"),
+  firstName: yup.string().required("ชื่อ is required"),
   lastName: yup.string().required("ชื่อผู้ใช้ is required"),
   studentId: yup.string().required(""),
   faculty: yup.string().required(""),
@@ -59,6 +59,7 @@ export interface FormType {
   tempFile?: string;
   fileType?: string;
   detail?: string;
+  detailMsg2?: string;
   
 }
 
@@ -85,6 +86,7 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
       studentId: studentId || "",
       faculty: faculty || "",
       detailMsg: mode == 'view' ? detailMsg : "",
+      detailMsg2: ''
     },
   });
 
@@ -92,17 +94,17 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
     if (data && data.information) {
       const { firstName, lastName, gpax, studentId, faculty } = data.information || {};
 
-      setValue("firstName", firstName || "");
-      setValue("lastName", lastName || "");
-      setValue("gpax", gpax || "");
-      setValue("studentId", studentId || "");
-      setValue("faculty", faculty || "");
-      setValue("detailMsg", detailMsg || "");
+      setValue("firstName", firstName || "-");
+      setValue("lastName", lastName || "-");
+      setValue("gpax", gpax || "0.00");
+      setValue("studentId", studentId || "-");
+      setValue("faculty", faculty || "-");
+      setValue("detailMsg", detailMsg || "-");
     }
   }, [data, setValue, detailMsg]);
 
   useEffect(() => {
-    setValue("detailMsg",'');
+    setValue("detailMsg",'-');
   }, [mode, setValue])
 
   
@@ -110,7 +112,8 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
   // Handle form submission
   const onSubmit = (data: FormType) => {
       console.log("Form Submitted:", data);
-      data.detail = data.detailMsg
+      data.detail = data.detailMsg2
+
     setDataPatch(data)
   };
 
@@ -127,6 +130,7 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
               id="firstName"
               label="ชื่อ"
               variant="filled"
+              disabled={true}
               error={!!errors.firstName}
               helperText={errors.firstName?.message}
             />
@@ -141,6 +145,7 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
               id="lastName"
               label="นามสกุล"
               variant="filled"
+              disabled={true}
               error={!!errors.lastName}
               helperText={errors.lastName?.message}
             />
@@ -157,6 +162,7 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
               label="gpax"
               type="text"
               variant="filled"
+              disabled={true}
               error={!!errors.gpax}
               helperText={errors.gpax?.message}
             />
@@ -171,6 +177,7 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
               id="studentId"
               label="รหัสนักศึกษา"
               type="text"
+              disabled={true}
               variant="filled"
               error={!!errors.studentId}
               helperText={errors.studentId?.message}
@@ -189,8 +196,9 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
                 id="detailMsg"
                 label="ประวัติการกระทำผิด"
                 variant="filled"
+                disabled={true}
                 multiline
-                rows={mode == 'view' ? 4 : 1} // Adjust the default height (4 rows visible)
+                rows={4} // Adjust the default height (4 rows visible)
                 // InputProps={{
                 //     readOnly: true, // Make it read-only if it's for display only
                 // }}
@@ -200,11 +208,39 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
                 />
                     )}
                 />
+                <Controller
+                    name="detailMsg2"
+                    control={control}
+                    render={({ field }) => 
+               
+                
+                (
+                
+                <TextField
+                {...field}
+                id="detailMsg2"
+                label="เพิ่มประวัติการกระทำผิด"
+                variant="filled"
+                color="secondary"
+                // disabled={mode === 'view'}
+                hidden = { mode === 'view'}
+                multiline
+                rows={1} // Adjust the default height (4 rows visible)
+                // InputProps={{
+                //     readOnly: true, // Make it read-only if it's for display only
+                // }}
+                error={!!errors.detailMsg2}
+                helperText={errors.detailMsg2?.message}
+                // sx={{ backgroundColor: "#f9f9f9" }} // Optional: Style for better readability
+                />
+                    )}
+                />
         <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='end'>
         <Button
             type="button" // Prevents the form submission
             variant="outlined"
             color="warning"
+            // disabled={mode === 'view'}
             onClick={() => {
                 setMode("edit")
                 setModeAPI('edit')
@@ -213,7 +249,7 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
             เพิ่มประวัติ
             </Button>
 
-        <Button type="submit" variant="contained" onClick={()=> handleSubmit(onSubmit)} >
+        <Button type="submit" variant="contained" onClick={()=> handleSubmit(onSubmit)} disabled={mode === 'view'} >
           Submit
         </Button>
        

@@ -4,7 +4,7 @@ import { Box, Typography, Paper } from '@mui/material';
 import { baseURL } from '../../../../../APIs/connetURL';
 import React from 'react';
 import { FileUploadType } from './TextInput';
-
+import { useSnackbar } from 'notistack';
 
 // interface UploadResponse {
 //   message: string;
@@ -16,8 +16,7 @@ interface UploadImage {
 }
 
 const FileUploadDropzoneSearch = ({setTempsFileImage }: UploadImage) => {
-
-
+  const {enqueueSnackbar} = useSnackbar()
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'image/jpeg': ['.jpg', '.jpeg'],
@@ -36,12 +35,22 @@ const FileUploadDropzoneSearch = ({setTempsFileImage }: UploadImage) => {
               'Content-Type': 'multipart/form-data',
             },
           });
+
+            if (response.status == 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+            if (response.data.status == 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+            if (response.status === 400) enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
           console.log("TTTTTTTTT", response)
           if (response) setTempsFileImage(response?.data)
 
           console.log('File uploaded successfully:', response.data);
         } catch (error) {
           console.error('File upload failed:', error);
+          if (error) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+          if (axios.isAxiosError(error)) {
+          enqueueSnackbar('เกิดความผิดพลาดในระบบ')
+        console.error("Axios error response:", error.response?.data);
+    }
+  
         }
       }
     },
