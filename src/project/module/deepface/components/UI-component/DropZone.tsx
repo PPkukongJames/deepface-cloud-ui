@@ -3,23 +3,17 @@ import axios from 'axios';
 import { Box, Typography, Paper } from '@mui/material';
 import { baseURL } from '../../../../../APIs/connetURL';
 import { FileUploadType } from './TextInput';
-import { useSnackbar } from 'notistack';
-
-
-
-// interface UploadResponse {
-//   message: string;
-//   fileUrl: string;
-// }
+// import { useSnackbar } from 'notistack';
+// import { useState } from 'react';
 
 interface UploadImage {
-    setTempsFileImage: React.Dispatch<React.SetStateAction<FileUploadType | null>>;
+  setTempsFileImage: React.Dispatch<React.SetStateAction<FileUploadType | null>>;
+  setPreview: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const FileUploadDropzone = ({setTempsFileImage }: UploadImage) => {
-
-    const {enqueueSnackbar} = useSnackbar()
-    
+const FileUploadDropzone = ({ setTempsFileImage, setPreview }: UploadImage) => {
+//   const { enqueueSnackbar } = useSnackbar();
+  
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -31,6 +25,15 @@ const FileUploadDropzone = ({setTempsFileImage }: UploadImage) => {
 
       for (const file of acceptedFiles) {
         try {
+          // Frontend: Generate preview using FileReader
+          const reader = new FileReader();
+          reader.onload = () => {
+            console.log('Files loaded:, ' + reader.result)
+            setPreview(reader.result as string); // Set the preview URL
+          };
+          reader.readAsDataURL(file);
+
+          // Backend: Upload logic
           const formData = new FormData();
           formData.append('file', file);
 
@@ -40,24 +43,22 @@ const FileUploadDropzone = ({setTempsFileImage }: UploadImage) => {
             },
           });
 
-          if (response.status == 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
-          if (response.data.status == 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
-          if (response.status === 400) return enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
+        //   if (response.status === 400 || response.data.status === 400) {
+        //     enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล');
+        //     return;
+        //   }
 
-          console.log('res', response)
-
-           // Adjust based on your API response
+          console.log('res', response);
           setTempsFileImage(response.data);
 
           console.log('File uploaded successfully:', response.data);
         } catch (error) {
           console.error('File upload failed:', error);
-          if (error) enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล')
-
-            if (axios.isAxiosError(error)) {
-                enqueueSnackbar('เกิดความผิดพลาดในระบบ')
-                console.error("Axios error response:", error.response?.data);}
-            
+        //   enqueueSnackbar('ไม่พบผู้ใช้ในฐานข้อมูล');
+          if (axios.isAxiosError(error)) {
+            // enqueueSnackbar('เกิดความผิดพลาดในระบบ');
+            console.error('Axios error response:', error.response?.data);
+          }
         }
       }
     },

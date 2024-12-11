@@ -1,13 +1,13 @@
 {
-  "name": "deepface-ui",
+  "name": "my-react-app",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
@@ -22,7 +22,7 @@
     "dayjs": "^1.11.13",
     "deepface-ui": "file:",
     "fine-uploader": "^5.16.2",
-    "notistack": "^3.0.1",
+    "my-react-app": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.5",

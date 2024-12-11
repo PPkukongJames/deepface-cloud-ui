@@ -5,10 +5,14 @@ import { Box, Grid2, Paper, Typography } from "@mui/material";
 import cofouderImage from '../../../../assets/co-founder.jpg'
 import LogoSC from '../../../../assets/Screenshot 2024-11-23 003029.jpg'
 import crossX from '../../../../assets/cross.jpg'
+// import TemporaryDrawer from "../components/UI-component/Drawer";
 
 export default function HomePage() {
     return (
       <div style={{  height: '127vh', padding: '2px', margin: '2px', border: '3px solid black'}}>
+        {/* <>
+        <TemporaryDrawer />
+        </> */}
       <React.Fragment>
           {/* <Box>
               <Stack> */}
@@ -85,7 +89,7 @@ export default function HomePage() {
           gridRow: "1 / 5",
          
           }}>
-            <Paper elevation={2} sx={{ minHeight: "90vh", border: '2px solid black'}}>
+            <Paper elevation={2} sx={{ height: "94vh", border: '2px solid black'}}>
           <TextInputField />
             </Paper>
         </Grid2>

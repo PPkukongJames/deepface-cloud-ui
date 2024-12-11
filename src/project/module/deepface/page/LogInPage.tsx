@@ -2,8 +2,10 @@
 import { Box, Grid, TextField, Button, Typography, Paper } from "@mui/material";
 import BGImage from "../../../../assets/Picture1.jpg";
 import Logo from "../../../../assets/Picture2.png"
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   return (
     <Box sx={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", margin: 0.5, padding: 0.5 ,
       backgroundColor: "rgb(77, 75, 74)",
@@ -66,6 +68,7 @@ export default function LoginPage() {
                 variant="contained"
                 fullWidth
                 sx={{ marginBottom: 2 }}
+                onClick={() => navigate("/homepage")}
               >
                 Login
               </Button>
