@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box, Stack, TextField, Button, Select, MenuItem, Grid2} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,6 +8,7 @@ import DatePickerValue from "./DatePickerMN";
 import FileUploadDropzone from "./DropZone";
 import axios from "axios";
 import { baseURL } from "../../../../../APIs/connetURL";
+import { useSnackbar } from 'notistack';
 
 // Define the validation schema using Yup
 export interface ResPonseSearch {
@@ -70,8 +71,10 @@ export function TextInputField() {
 const [fileTemp, setTempsFileImage] = useState<FileUploadType | null>(null)
 const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
 const [response, setResponse] = useState<ResPonseSearch | null>(null)
-const [imageBase64, setImageBase64] = useState<string | null>(null);
-
+const [preview, setPreview] = useState<string | null>(null)
+// const [imageBase64, setImageBase64] = useState<string | null>(null);
+const [status, setStatus] = useState<number>(0);
+const {enqueueSnackbar} = useSnackbar()
   const {
     control,
     handleSubmit,
@@ -91,40 +94,42 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
   });
 
 
-  useEffect(() => {
-    const fetchImage = async () => {
+  // useEffect(() => {
+  //   const fetchImage = async () => {
 
-    // console.log('imageTempUpload', imageTempUpload.tempFile)
-    const payload = {
-        tempFile: fileTemp!.tempFile,
-        fileType: fileTemp!.fileType, 
-        }
-    // console.log('imageTempUpload', imageTempUpload.tempFile)
-    // console.log('payload', payload.tempFile)
-    try {
-    // console.log('payload', payload)
-        const response = await fetch(`${baseURL}/search`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload), // Attach the payload here
-            });
-    const data: ResPonseSearch = await response.json();
-    if (data) {
-        // console.log("DAta--------------", data)
-        setImageBase64(data.deepface.img); // Assuming API returns the base64 string in `data.image`
+  //   // console.log('imageTempUpload', imageTempUpload.tempFile)
+  //   const payload = {
+  //       tempFile: fileTemp!.tempFile,
+  //       fileType: fileTemp!.fileType, 
+  //       }
+  //   // console.log('imageTempUpload', imageTempUpload.tempFile)
+  //   // console.log('payload', payload.tempFile)
+  //   try {
+  //   // console.log('payload', payload)
+  //       const response = await fetch(`${baseURL}/search`, {
+  //           method: "POST",
+  //           headers: {
+  //               "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify(payload), // Attach the payload here
+  //           });
+  //   const data: ResPonseSearch = await response.json();
+  //   if (data) {
+  //       // console.log("DAta--------------", data)
+  //       setImageBase64(data.deepface.img); // Assuming API returns the base64 string in `data.image`
         
-    }
-    } catch (error) {
-    console.error("Error fetching the image:", error);
-    } 
+  //   }
+  //   } catch (error) {
+  //   console.error("Error fetching the image:", error);
+  //   // } finally {
+  //   //     enqueueSnackbar('บันทึกสำเร็จ', { variant: 'success', autoHideDuration: 3000})
+  //   }
     
-  };
+  // };
     
     
-    fetchImage();
-  }, [fileTemp]);
+  //   fetchImage();
+  // }, [fileTemp]);
 
   const handleTriggerData = () => {
 
@@ -169,11 +174,23 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
     console.log("API Response:", res.data);
   } catch (error) {
     console.error("Submission failed:", error);
-
+  
     // Optional: Handle API errors
     if (axios.isAxiosError(error)) {
       console.error("Axios error response:", error.response?.data);
-    }
+    } 
+  } finally {
+    enqueueSnackbar('บันทึกสำเร็จ', {
+      variant: 'success',
+      autoHideDuration: 3000,
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'right',
+      },
+    });
+
+    setStatus(9);
+    
   }
 };
   return (
@@ -186,6 +203,7 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
           render={({ field }) => (
             <TextField
               {...field}
+              disabled={status == 9 ? true : false}
               id="firstName"
               label="ชื่อ"
               variant="filled"
@@ -200,6 +218,8 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
           render={({ field }) => (
             <TextField
               {...field}
+            
+              disabled={status == 9 ? true : false}
               id="lastName"
               label="นามสกุล"
               variant="filled"
@@ -215,6 +235,7 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
           render={({ field }) => (
             <TextField
               {...field}
+              disabled={status == 9 ? true : false}
               id="gpax"
               label="gpax"
               type="text"
@@ -230,6 +251,7 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
           render={({ field }) => (
             <TextField
               {...field}
+              disabled={status == 9 ? true : false}
               id="studentId"
               label="รหัสนักศึกษา"
               type="text"
@@ -245,8 +267,9 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
           render={({ field }) => (
             <TextField
               {...field}
+              disabled={status == 9 ? true : false}
               id="detailMsg"
-              label="รหัสนักศึกษา"
+              label="ใส่ประวัติ"
               type="text"
               variant="filled"
               error={!!errors.detailMsg}
@@ -288,6 +311,7 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
                     labelId="faculty-label"
                     displayEmpty
                     fullWidth
+                    disabled={status == 9 ? true : false}
                   >
                     {/* Default placeholder */}
                     <MenuItem value="" disabled>
@@ -314,6 +338,7 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
             }}
         >
             <DatePickerValue
+          
             value={dateValue}
             onChange={(newValue) => setDateValue(newValue)}
             />
@@ -321,13 +346,49 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
         </Grid2>
 
         
-          <Box>
-      {imageBase64 ? (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              width: '100%',
+              gap: '8px', // Space between dropzone and error
+            }}
+          >
+      {preview ? (
+        <Box
+        sx={{
+          marginTop: 1,
+          width: '30%',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
         <img
-          src={`data:image/png;base64,${imageBase64}`}
-          alt="API Loaded"
-          style={{ width: "20vh", height: "20vh", objectFit: "contain" }}
+          src={preview}
+          alt="Preview"
+          style={{
+            width: '150px',
+            height: '150px',
+            borderRadius: '12px', // More rounded corners
+            boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.25)', // Enhanced shadow for depth
+            border: '2px solid black', // Green border for added decoration
+            transition: 'transform 0.3s ease', // Smooth scaling on hover
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'scale(1.15)'; // Slight zoom on hover
+            e.currentTarget.style.border = '2px solid #4caf50'; // Green border for added decoration
+
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'; // Reset zoom on mouse out
+          }}
         />
+      </Box>
+      
+      
       ) : (
         <Box
             sx={{
@@ -338,14 +399,14 @@ const [imageBase64, setImageBase64] = useState<string | null>(null);
               gap: '8px', // Space between dropzone and error
             }}
           >
-            <FileUploadDropzone setTempsFileImage={setTempsFileImage} />
+            <FileUploadDropzone setTempsFileImage={setTempsFileImage} setPreview={setPreview} />
           </Box>
       )}
     </Box>
         
         <Box display='flex' flexDirection='column' justifyContent='flex-start' alignItems='end'>
-        <Button type="submit" variant="contained" sx={{ position: "absolute" , top: '870px'}}>
-          Submit
+        <Button type="submit" disabled={status == 9 ? true : false} variant="contained" color='success' sx={{ position: "absolute" , top: '850px'}}>
+          {status != 9 ? "ยืนยัน" : "เสร็จสิ้น"}
         </Button>
         </Box>
       </Stack>

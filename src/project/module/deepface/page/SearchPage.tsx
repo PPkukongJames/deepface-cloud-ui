@@ -8,6 +8,7 @@ import { baseURL } from "../../../../APIs/connetURL";
 import FileUploadDropzoneSearch from "../components/UI-component/DropZoneForSearch";
 import { FileUploadType } from "../components/UI-component/TextInput";
 import { useSnackbar } from "notistack";
+// import TemporaryDrawer from "../components/UI-component/Drawer";
 
 export interface ResPonseSearch {
  
@@ -94,7 +95,7 @@ export default function SearchPage() {
                 }
                 delete payload.detailMsg
                 delete payload.detailMsg2
-                
+
                 const response = await fetch(`${baseURL}/history`, {
                     method: "POST",
                     headers: {
@@ -162,6 +163,9 @@ export default function SearchPage() {
 
     return (
       <div style={{  height: '99vh', padding: '2px', margin: '5px', border: '4px solid black', paddingTop: '5px', paddingBottom: '55px', borderRadius: '5px'}}>
+         {/* <>
+        <TemporaryDrawer />
+        </> */}
       <React.Fragment>
           {/* <Box>
               <Stack> */}

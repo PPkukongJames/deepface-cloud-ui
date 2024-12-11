@@ -4,13 +4,16 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
+    // "outDir": "./dist/server",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    // "noEmit": false,
+    "composite": true,
+    "emitDeclarationOnly":true,
 
     /* Linting */
     "strict": true,
@@ -18,5 +21,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "server.ts"],
+
+  "extends": "./tsconfig.json",
+  // "include": ["server.ts"],
+  "exclude": ["node_modules"]
 }
+

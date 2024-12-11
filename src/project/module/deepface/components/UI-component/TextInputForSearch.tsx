@@ -85,14 +85,14 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
       lastName: lastName ||"",
       studentId: studentId || "",
       faculty: faculty || "",
-      detailMsg: mode == 'view' ? detailMsg : "",
+      detailMsg: detailMsg || "",
       detailMsg2: ''
     },
   });
 
   useEffect(() => {
     if (data && data.information) {
-      const { firstName, lastName, gpax, studentId, faculty } = data.information || {};
+      const { firstName, lastName, gpax, studentId, faculty, detailMsg } = data.information || {};
 
       setValue("firstName", firstName || "-");
       setValue("lastName", lastName || "-");
@@ -103,9 +103,9 @@ export default function TextInputFieldForSearch({data, setModeAPI, setDataPatch}
     }
   }, [data, setValue, detailMsg]);
 
-  useEffect(() => {
-    setValue("detailMsg",'-');
-  }, [mode, setValue])
+//   useEffect(() => {
+//     setValue("detailMsg",'-');
+//   }, [mode, setValue])
 
   
 
